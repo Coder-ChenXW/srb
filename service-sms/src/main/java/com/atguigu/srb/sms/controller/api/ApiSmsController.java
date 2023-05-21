@@ -54,10 +54,12 @@ public class ApiSmsController {
         HashMap<String, Object> map = new HashMap<>();
         map.put("code", code);
         log.info("验证码：" + map.get("code"));
-        smsService.send(mobile, SmsProperties.TEMPLATE_CODE,map);
+
+        // 因为阿里云短信服务收费，所以暂时注释掉
+//        smsService.send(mobile, SmsProperties.TEMPLATE_CODE,map);
 
         // 将验证码存入redis
-        redisTemplate.opsForValue().set("srb:sms:code:" + mobile, map.get("code"), 5, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set("srb:sms:code:" + mobile, map.get("code"), 5, TimeUnit.MINUTES);
 
 
         return R.ok().message("短信发送成功");

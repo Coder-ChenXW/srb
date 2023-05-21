@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -23,6 +25,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="UserInfo对象", description="用户基本信息")
 public class UserInfo implements Serializable {
+
+    public static final Integer STATUS_NORMAL = 1;
+    public static final Integer STATUS_LOCKED = 0;
+    public static final String USER_AVATAR="\n" +
+            "https://tanhuacouldplatform.oss-cn-beijing.aliyuncs.com/2022/07/16/b36d566b-0125-471f-9e23-73799d9f4ef2.png";
 
     private static final long serialVersionUID = 1L;
 
@@ -73,6 +80,7 @@ public class UserInfo implements Serializable {
     private Integer status;
 
     @ApiModelProperty(value = "创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createTime;
 
     @ApiModelProperty(value = "更新时间")
