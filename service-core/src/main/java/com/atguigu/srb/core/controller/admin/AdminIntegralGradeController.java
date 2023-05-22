@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("/admin/core/integralGrade")
 @Slf4j
-@CrossOrigin
+//@CrossOrigin
 public class AdminIntegralGradeController {
 
     @Resource
