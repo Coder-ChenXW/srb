@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/api/core/userInfo")
 @Slf4j
-@CrossOrigin
+//@CrossOrigin
 public class ApiUserInfoController {
 
 
@@ -63,7 +63,6 @@ public class ApiUserInfoController {
 
         return R.ok().message("注册成功");
     }
-
 
 
     /**
@@ -105,5 +104,14 @@ public class ApiUserInfoController {
         }
 
     }
+
+
+
+    @ApiOperation("校验手机号是否注册")
+    @GetMapping("/checkMobile/{mobile}")
+    public boolean checkMobile(@PathVariable String mobile){
+        return userInfoService.checkMobile(mobile);
+    }
+
 
 }

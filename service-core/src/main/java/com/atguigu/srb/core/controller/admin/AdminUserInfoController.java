@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/admin/core/userInfo")
 @Slf4j
-@CrossOrigin
+//@CrossOrigin
 public class AdminUserInfoController {
 
 
@@ -56,6 +56,26 @@ public class AdminUserInfoController {
         Page<UserInfo> pageParam = new Page<>(page, limit);
         IPage<UserInfo> pageModel = userInfoService.listPage(pageParam, userInfoQuery);
         return R.ok().data("pageModel", pageModel);
+    }
+
+
+    /**
+     * @description: 锁定会员信息与解锁会员信息
+     * @author: ChenXW
+     * @date: 2023/5/22 21:27
+     */
+    @ApiOperation("锁定和解锁")
+    @PutMapping("/lock/{id}/{status}")
+    public R lock(
+            @ApiParam(value = "会员id", required = true)
+            @PathVariable("id") Long id,
+
+            @ApiParam(value = "锁定状态(0:锁定 1:正常)",required = true)
+            @PathVariable("status") Integer status){
+
+        userInfoService.lock(id, status);
+        return R.ok().message(status == 1 ? "解锁成功" : "锁定成功");
+
     }
 
 }
