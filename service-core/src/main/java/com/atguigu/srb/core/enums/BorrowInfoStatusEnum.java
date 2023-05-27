@@ -7,9 +7,10 @@ import lombok.Getter;
 @Getter
 public enum BorrowInfoStatusEnum {
 
-    CHECK_RUN(0, "待审核"),
-    CHECK_OK(1, "审核通过"),
-    CHECK_FAIL(2, "审核不通过"),
+    NO_AUTH(0, "未认证"),
+    CHECK_RUN(1, "审核中"),
+    CHECK_OK(2, "审核通过"),
+    CHECK_FAIL(-1, "审核不通过"),
     ;
 
     private Integer status;
