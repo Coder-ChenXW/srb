@@ -2,6 +2,7 @@ package com.atguigu.srb.core.service.impl;
 
 import com.atguigu.common.exception.Assert;
 import com.atguigu.common.result.ResponseEnum;
+import com.atguigu.srb.base.dto.SmsDTO;
 import com.atguigu.srb.core.enums.TransTypeEnum;
 import com.atguigu.srb.core.hfb.FormHelper;
 import com.atguigu.srb.core.hfb.HfbConst;
@@ -14,7 +15,10 @@ import com.atguigu.srb.core.pojo.entity.UserInfo;
 import com.atguigu.srb.core.service.TransFlowService;
 import com.atguigu.srb.core.service.UserAccountService;
 import com.atguigu.srb.core.service.UserBindService;
+import com.atguigu.srb.core.service.UserInfoService;
 import com.atguigu.srb.core.util.LendNoUtils;
+import com.atguigu.srb.rabbitutil.constant.MQConst;
+import com.atguigu.srb.rabbitutil.service.MQService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +53,12 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
 
     @Resource
     private UserAccountService userAccountService;
+
+    @Resource
+    private UserInfoService userInfoService;
+
+    @Resource
+    private MQService mqService;
 
 
     @Override
@@ -104,6 +114,19 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
 
         transFlowService.saveTransFlow(transFlowBO);
 
+        // 发消息
+        String mobile = userInfoService.getMobileByBindCode(bindCode);
+        SmsDTO smsDTO = new SmsDTO();
+        smsDTO.setMobile(mobile);
+        smsDTO.setMessage("充值成功");
+
+        mqService.sendMessage(
+                MQConst.EXCHANGE_TOPIC_SMS,
+                MQConst.ROUTING_SMS_ITEM,
+                smsDTO
+                );
+
+
         return "success";
     }
 
@@ -150,9 +173,9 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
 
         // 幂等判断
         log.info("提现成功");
-        String agentBillNo = (String)paramMap.get("agentBillNo");
+        String agentBillNo = (String) paramMap.get("agentBillNo");
         boolean result = transFlowService.isSaveTransFlow(agentBillNo);
-        if(result){
+        if (result) {
             log.warn("幂等性返回");
             return;
         }
@@ -173,7 +196,6 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
                 TransTypeEnum.WITHDRAW,
                 "提现啦");
         transFlowService.saveTransFlow(transFlowBO);
-
 
 
     }
